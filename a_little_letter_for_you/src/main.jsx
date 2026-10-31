@@ -17,6 +17,7 @@ const photos = [
 
 function App() {
   const [page, setPage] = useState('code')
+  const [unlocked, setUnlocked] = useState(false)
   const [code, setCode] = useState('')
   const [error, setError] = useState(false)
   const [music, setMusic] = useState(false)
@@ -24,21 +25,21 @@ function App() {
   const [answer, setAnswer] = useState('')
   const [chapter, setChapter] = useState(0)
 
-  const go = (p) => { setPage(p); window.scrollTo({top:0, behavior:'smooth'}) }
-  const submitCode = (e) => { e.preventDefault(); if (code.trim() === '14321') { setError(false); go('countdown') } else setError(true) }
+  const go = (p) => { setPage(p); document.getElementById(p)?.scrollIntoView({behavior:'smooth', block:'start'}) }
+  const submitCode = (e) => { e.preventDefault(); if (code.trim() === '14321') { setError(false); setUnlocked(true); setPage('countdown'); setTimeout(() => document.getElementById('countdown')?.scrollIntoView({behavior:'smooth'}), 120) } else setError(true) }
   const startStory = () => go('memories')
 
   return <main className="app-shell">
     <div className="ambient ambient-one" /><div className="ambient ambient-two" />
     <div className="petal petal-a">✿</div><div className="petal petal-b">✧</div><div className="petal petal-c">❀</div>
-    {page !== 'code' && page !== 'countdown' && <header className="topbar">
+    {unlocked && <header className="topbar">
       <button className="brand-mark" onClick={() => go('chapters')} aria-label="Home"><Heart size={17}/></button>
       <nav>{navItems.map(([id,label,Icon]) => <button key={id} className={page===id?'active':''} onClick={()=>go(id)}><Icon size={13}/><span>{label}</span></button>)}</nav>
       <button className="music-toggle" onClick={()=>setMusic(!music)} aria-label="Toggle music">{music?<Volume2 size={17}/>:<Music2 size={17}/>}</button>
     </header>}
 
     <AnimatePresence mode="wait">
-      {page==='code' && <Screen key="code"><section className="gate-screen">
+      {!unlocked && <Screen key="code" id="code"><section className="gate-screen">
         <div className="gate-copy">
           <p className="eyebrow">A STORY MADE JUST FOR YOU</p>
           <h1>A little<br/><em>Letter for you</em></h1>
@@ -54,7 +55,7 @@ function App() {
         </div>
       </section></Screen>}
 
-      {page==='countdown' && <Screen key="countdown"><section className="countdown-screen">
+      {unlocked && <Screen key="countdown" id="countdown"><section className="countdown-screen">
         <div className="envelope-scene">
           <div className="butterfly">🦋</div>
           <div className="envelope"><div className="envelope-flap"/><div className="letter-preview"><span>Are you ready?</span><small>Our story is about to begin...</small></div><div className="seal">♥</div></div>
@@ -64,7 +65,7 @@ function App() {
         <button className="primary-btn" onClick={startStory}>Begin our story <ArrowRight size={16}/></button>
       </section></Screen>}
 
-      {page==='memories' && <Screen key="memories"><section className="content-page memories-page">
+      {unlocked && <Screen key="memories" id="memories"><section className="content-page memories-page">
         <div className="section-heading"><p className="eyebrow">A MOVIE OF US</p><h2>Our <em>Memories</em></h2><p>Every little moment has become my favourite story.</p></div>
         <div className="memory-layout">
           <div className="film-card"><div className="film-top">✦ OUR LITTLE FILM ✦</div><div className="film-image" style={{backgroundImage:`url(${photos[0]})`}}><button className="play-button" onClick={()=>setPlaying(!playing)}>{playing?<Pause/>:<Play fill="currentColor"/>}</button><span className="film-caption">A thousand little moments, one beautiful us.</span></div><div className="film-controls"><span>{playing?'PLAYING':'00:24'}</span><div className="progress"><i/></div><span>01:48</span></div></div>
@@ -73,7 +74,7 @@ function App() {
         <button className="text-link" onClick={()=>go('chapters')}>Continue our story <ArrowRight size={15}/></button>
       </section></Screen>}
 
-      {page==='chapters' && <Screen key="chapters"><section className="content-page chapters-page">
+      {unlocked && <Screen key="chapters" id="chapters"><section className="content-page chapters-page">
         <div className="section-heading"><p className="eyebrow">A GARDEN OF LITTLE THINGS</p><h2>Our Little <em>Chapters</em></h2><p>Click a little flower to open our memories.</p></div>
         <div className="chapter-grid">
           {[
@@ -86,7 +87,7 @@ function App() {
         <div className="chapter-footer">made with love, just for you <Heart size={12} fill="currentColor"/></div>
       </section></Screen>}
 
-      {page==='letter' && <Screen key="letter"><section className="letter-page">
+      {unlocked && <Screen key="letter" id="letter"><section className="letter-page">
         <div className="paper">
           <div className="paper-flower">❀</div><p className="eyebrow">A LETTER FROM MY HEART</p>
           <h2>My dearest,</h2>
@@ -99,7 +100,7 @@ function App() {
         <button className="text-link" onClick={()=>go('voice')}>There's something I want you to hear <ArrowRight size={15}/></button>
       </section></Screen>}
 
-      {page==='voice' && <Screen key="voice"><section className="voice-page">
+      {unlocked && <Screen key="voice" id="voice"><section className="voice-page">
         <div className="voice-card">
           <p className="eyebrow">A LITTLE VOICE, JUST FOR YOU</p><h2>A Voice<br/><em>from My Heart</em></h2>
           <div className="cassette"><div className="cassette-label"><span>FOR YOU, ALWAYS</span><div className="cassette-reels"><i/><i/></div><small>side A · a little love note</small></div><div className="cassette-bottom">♡ &nbsp; PLAY ME &nbsp; ♡</div></div>
@@ -109,7 +110,7 @@ function App() {
         </div>
       </section></Screen>}
 
-      {page==='surprise' && <Screen key="surprise"><section className="surprise-page">
+      {unlocked && <Screen key="surprise" id="surprise"><section className="surprise-page">
         <p className="eyebrow">THERE IS ONE LAST THING I WANT TO ASK YOU...</p><h2>One Last <em>Surprise</em></h2>
         <div className="ring-box"><div className="ring-glow"/><div className="ring">◇</div><div className="ring-stone">✦</div></div>
         <h3>Will you be my forever?</h3>
@@ -117,12 +118,12 @@ function App() {
         <button className="text-link back-link" onClick={()=>go('chapters')}><ArrowLeft size={14}/> Back to our chapters</button>
       </section></Screen>}
     </AnimatePresence>
-    {page!=='code' && <footer className="site-footer"><span>✦</span> A LITTLE LETTER FOR YOU <span>✦</span></footer>}
+    {unlocked && <footer className="site-footer"><span>✦</span> A LITTLE LETTER FOR YOU <span>✦</span></footer>}
   </main>
 }
 
-function Screen({children}) {
-  return <motion.div className="screen" initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-10}} transition={{duration:.45,ease:'easeOut'}}>{children}</motion.div>
+function Screen({children,id}) {
+  return <motion.div id={id} className="screen" initial={{opacity:0,y:14}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-10}} transition={{duration:.45,ease:'easeOut'}}>{children}</motion.div>
 }
 
 createRoot(document.getElementById('root')).render(<App/>)
