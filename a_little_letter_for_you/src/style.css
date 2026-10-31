@@ -40,3 +40,15 @@ button{font-family:inherit}
 .primary-btn{background:linear-gradient(135deg,#e8a0a5,#a94e68);border-color:#f8d8cb}
 .chapter-card{background:linear-gradient(145deg,rgba(255,232,222,.95),rgba(208,139,150,.88));border-color:#f8d7c7}
 .paper{background-color:#f5dfcb;background-image:repeating-linear-gradient(0deg,transparent,transparent 31px,rgba(177,119,112,.15) 32px),radial-gradient(circle at 95% 5%,rgba(216,151,150,.25),transparent 25%)}
+
+/* Long-form wedding invitation: guests scroll through each chapter */
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+.app-shell{overflow:visible;min-height:100vh}
+.topbar{position:sticky;top:12px;left:auto;transform:none;margin:12px auto 0;z-index:20}
+.screen{min-height:100svh;padding:90px 24px 90px;scroll-margin-top:0;position:relative}
+.screen:not(:first-of-type):before{content:"";position:absolute;top:28px;left:50%;width:1px;height:34px;background:linear-gradient(transparent,#f8d6c7,transparent);opacity:.8}
+.screen .content-page,.screen .letter-page,.screen .voice-page,.screen .surprise-page{position:relative}
+.site-footer{position:relative;bottom:auto;padding:25px 12px 32px}
+.countdown-screen,.content-page,.letter-page,.voice-page,.surprise-page{animation:invitationReveal .9s ease both}
+@keyframes invitationReveal{from{opacity:.7;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){.screen{padding:82px 16px 70px;min-height:92svh}.topbar{top:8px;margin-top:8px}.topbar nav{gap:9px}.topbar nav button span{font-size:7px}}
